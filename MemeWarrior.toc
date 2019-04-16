@@ -1,0 +1,9 @@
+## Interface: 11200
+## Title: MemeWarrior
+## Version: 1
+## Notes: really memey warrior macro
+## DefaultState: enabled
+## Dependencies: KLHThreatMeter
+## Author: Retherz
+
+MemeWarrior.lua
