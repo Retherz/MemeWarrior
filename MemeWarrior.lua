@@ -91,7 +91,8 @@ function MemeWarrior_SoftRock()
     CastSpellByName("Berserker Stance");
   end
   if(UnitHealth("target") <= 20) then
-    Bloodexecute();
+  CastSpellByName("Execute");
+    --Bloodexecute();
     return;
   elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
     CastSpellByName("Bloodthirst");
@@ -107,7 +108,7 @@ function MemeWarrior_SoftRock()
 end
 
 function Bloodexecute()
-  if(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) == 0) then
+  if(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
     local b,c,d=UnitAttackPower("player");
     local n = UnitMana("player");
     if(((n>29) and (b+c+d)/0.45>(600+(n-10)*15))) then
