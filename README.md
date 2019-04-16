@@ -6,6 +6,10 @@ Use macro:
 ```
 /run MemeWarrior_Rock();
 ```
-Add your start attack script aswell.
 
-todo: non cleave/WW macro.
+No cleave/WW:
+```
+/run MemeWarrior_SoftRock();
+```
+
+Add your start attack script aswell.
