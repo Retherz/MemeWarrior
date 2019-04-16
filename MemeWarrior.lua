@@ -6,7 +6,9 @@ MemeWarrior_HamstringID = 0;
 MemeWarrior_PummelID = 0;
 
 function MemeWarrior_OnEvent()
-
+  if(strfind(arg1, "dodge")) then
+    MemeWarrior_Overpower = GetTime();
+  end
 end
 
 
@@ -15,22 +17,21 @@ function MemeWarrior_OnLoad()
     local _, englishClass = UnitClass("player");
     if(englishClass ~= "WARRIOR") then
       MemeWarrior_AddOnFrame:SetScript("OnUpdate", nil);
-      frame:SetScript("OnEvent", nil);
+      MemeWarrior_AddOnFrame:SetScript("OnEvent", nil);
       return;
     end
     MemeWarrior_SetSpellIDs();
     MemeWarrior_AddOnFrame:SetScript("OnUpdate", nil);
+    MemeWarrior_AddOnFrame:SetScript("OnEvent", MemeWarrior_OnEvent);
   end
 end
 
 local frame = CreateFrame("Frame", "MemeWarrior_AddOnFrame");
-frame:SetScript("OnEvent", MemeWarrior_OnEvent);
-frame:RegisterEvent("CHAT_MSG_ADDON");
-frame:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH");
-frame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE");
-frame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE");
-frame:RegisterEvent("PLAYER_TARGET_CHANGED");
-frame:SetScript("OnUpdate", MemeWarrior_OnLoad);
+MemeWarrior_AddOnFrame:SetScript("OnEvent", MemeWarrior_OnEvent);
+MemeWarrior_AddOnFrame:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE");
+MemeWarrior_AddOnFrame:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE");
+MemeWarrior_AddOnFrame:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES");
+MemeWarrior_AddOnFrame:SetScript("OnUpdate", MemeWarrior_OnLoad);
 
 function MemeWarrior_SetSpellIDs()
   local i = 1
@@ -85,10 +86,30 @@ function MemeWarrior_Rock()
   end
 end
 
+function MemeWarrior_SoftRock()
+  if(not MemeWarrior_OverpowerReady() and not MemeWarrior_IsBerserker()) then
+    CastSpellByName("Berserker Stance");
+  end
+  if(UnitHealth("target") <= 20) then
+    Bloodexecute();
+    return;
+  elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
+    CastSpellByName("Bloodthirst");
+  elseif(MemeWarrior_OverpowerReady()) then
+    CastSpellByName("Battle Stance");
+    CastSpellByName("Overpower");
+  elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and UnitMana("player") > 40) then
+    Pummelstring();
+  end
+  if(UnitMana("player") > 50) then
+    CastSpellByName("Heroic Strike");
+  end
+end
+
 function Bloodexecute()
   if(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) == 0) then
     local b,c,d=UnitAttackPower("player");
-    local n = UnitMana("p");
+    local n = UnitMana("player");
     if(((n>29) and (b+c+d)/0.45>(600+(n-10)*15))) then
       CastSpelllByName("Bloodthirst");
       return;
@@ -108,7 +129,7 @@ end
 function HeroicCleave()
   if(GetNumRaidMembers() > 0) then
     local data, playerCount, threat100 = KLHTM_GetRaidData();
-    if(math.floor(userThreat * 100 / threat100 + 0.5) > 90) then
+    if(math.floor(mod.table.raiddata[UnitName("player")] * 100 / threat100 + 0.5) > 90) then
       CastSpellByName("Cleave");
       return;
     end
@@ -122,5 +143,5 @@ function MemeWarrior_IsBerserker()
 end
 
 function MemeWarrior_OverpowerReady()
-  return MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and MemeWarrior_GetCooldown(MemeWarrior_WhirlwindID) > 1.5 and GetTime() - MemeWarrior_Overpower < 3 and MemeWarrior_GetCooldown(MemeWarrior_OverpowerID);
+  return MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and MemeWarrior_GetCooldown(MemeWarrior_WhirlwindID) > 1.5 and GetTime() - MemeWarrior_Overpower < 2 and MemeWarrior_GetCooldown(MemeWarrior_OverpowerID);
 end
