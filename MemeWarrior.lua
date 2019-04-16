@@ -127,13 +127,13 @@ function Pummelstring()
 end
 
 function HeroicCleave()
-  if(GetNumRaidMembers() > 0) then
-    local data, playerCount, threat100 = KLHTM_GetRaidData();
-    if(math.floor(mod.table.raiddata[UnitName("player")] * 100 / threat100 + 0.5) > 90) then
-      CastSpellByName("Cleave");
-      return;
-    end
-  end
+  --if(GetNumRaidMembers() > 0) then
+    --local data, playerCount, threat100 = KLHTM_GetRaidData();
+    --if(math.floor(mod.table.raiddata[UnitName("player")] * 100 / threat100 + 0.5) > 90) then
+    --  CastSpellByName("Cleave");
+      --return;
+    --end
+  --end
   CastSpellByName("Heroic Strike");
 end
 
