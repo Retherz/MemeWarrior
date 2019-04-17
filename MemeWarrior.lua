@@ -79,7 +79,7 @@ function MemeWarrior_Rock()
     CastSpellByName("Battle Stance");
     CastSpellByName("Overpower");
   elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and UnitMana("player") > 40) then
-    Pummelstring();
+    CastSpellByName("Hamstring");
   end
   if(UnitMana("player") > 50) then
     HeroicCleave();
@@ -91,8 +91,7 @@ function MemeWarrior_SoftRock()
     CastSpellByName("Berserker Stance");
   end
   if(UnitHealth("target") <= 20) then
-  CastSpellByName("Execute");
-    --Bloodexecute();
+    Bloodexecute();
     return;
   elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
     CastSpellByName("Bloodthirst");
@@ -100,42 +99,40 @@ function MemeWarrior_SoftRock()
     CastSpellByName("Battle Stance");
     CastSpellByName("Overpower");
   elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and UnitMana("player") > 40) then
-    Pummelstring();
+    CastSpellByName("Hamstring");
   end
   if(UnitMana("player") > 50) then
-    CastSpellByName("Heroic Strike");
+  CastSpellByName("Heroic Strike");
   end
 end
 
 function Bloodexecute()
-  --if(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
-    --local b,c,d=UnitAttackPower("player");
-    --local n = UnitMana("player");
-    --if(((n>29) and (b+c+d)/0.45>(600+(n-10)*15))) then
-      --CastSpellByName("Bloodthirst");
-      --return;
-    --end
-  --end
+  if(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
+    local b,c,d=UnitAttackPower("player");
+    local n = UnitMana("player");
+    if(((n>29) and (b+c+d)/0.45>(600+(n-10)*15))) then
+      CastSpellByName("Bloodthirst");
+      return;
+    end
+  end
   CastSpellByName("Execute");
 end
 
-function Pummelstring()
-  if(MemeWarrior_GetCooldown(MemeWarrior_PummelID) > 0) then
-    CastSpellByName("Hamstring");
-  else
-    CastSpellByName("Pummel");
+function HeroicCleave()
+  if(GetNumRaidMembers() > 0) then
+    if(MemeThreat() > 90) then
+     CastSpellByName("Cleave");
+      return;
+    end
   end
+  CastSpellByName("Heroic Strike");
 end
 
-function HeroicCleave()
-  --if(GetNumRaidMembers() > 0) then
-    --local data, playerCount, threat100 = KLHTM_GetRaidData();
-    --if(math.floor(mod.table.raiddata[UnitName("player")] * 100 / threat100 + 0.5) > 90) then
-     --CastSpellByName("Cleave");
-    --  return;
-    --end
-  --end
-  CastSpellByName("Heroic Strike");
+function MemeThreat()
+  local userThreat = klhtm.table.raiddata[UnitName("player")];
+  userThreat = userThreat == nil and 0 or userThreat;
+  local _, _, threat100 = KLHTM_GetRaidData();
+  return math.floor(userThreat * 100 / threat100 +0.5);
 end
 
 function MemeWarrior_IsBerserker()
