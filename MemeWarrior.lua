@@ -1,4 +1,4 @@
-MemeWarrior_Overpower = 0;
+  MemeWarrior_Overpower = 0;
 MemeWarrior_OverpowerID = 0;
 MemeWarrior_BloodthirstID = 0;
 MemeWarrior_WhirlwindID = 0;
@@ -65,7 +65,7 @@ function MemeWarrior_GetCooldown(id)
 end
 
 function MemeWarrior_Rock()
-  if(not MemeWarrior_OverpowerReady() and not MemeWarrior_IsBerserker()) then
+  if(not MemeWarrior_OverpowerReady(0) and not MemeWarrior_IsBerserker()) then
     CastSpellByName("Berserker Stance");
   end
   if(UnitHealth("target") <= 20) then
@@ -75,7 +75,7 @@ function MemeWarrior_Rock()
     CastSpellByName("Bloodthirst");
   elseif(MemeWarrior_GetCooldown(MemeWarrior_WhirlwindID) <= 0) then
     CastSpellByName("Whirlwind");
-  elseif(MemeWarrior_OverpowerReady()) then
+  elseif(MemeWarrior_OverpowerReady(0)) then
     CastSpellByName("Battle Stance");
     CastSpellByName("Overpower");
   elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and UnitMana("player") > 40) then
@@ -87,7 +87,7 @@ function MemeWarrior_Rock()
 end
 
 function MemeWarrior_SoftRock()
-  if(not MemeWarrior_OverpowerReady() and not MemeWarrior_IsBerserker()) then
+  if(not MemeWarrior_OverpowerReady(1) and not MemeWarrior_IsBerserker()) then
     CastSpellByName("Berserker Stance");
   end
   if(UnitHealth("target") <= 20) then
@@ -95,10 +95,10 @@ function MemeWarrior_SoftRock()
     return;
   elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) <= 0) then
     CastSpellByName("Bloodthirst");
-  elseif(MemeWarrior_OverpowerReady()) then
+  elseif(MemeWarrior_OverpowerReady(0)) then
     CastSpellByName("Battle Stance");
     CastSpellByName("Overpower");
-  elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and UnitMana("player") > 40) then
+  elseif(MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and UnitMana("player") > 60) then
     CastSpellByName("Hamstring");
   end
   if(UnitMana("player") > 50) then
@@ -140,6 +140,8 @@ function MemeWarrior_IsBerserker()
 	return active == 1
 end
 
-function MemeWarrior_OverpowerReady()
-  return MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > 1.5 and MemeWarrior_GetCooldown(MemeWarrior_WhirlwindID) > 1.5 and GetTime() - MemeWarrior_Overpower < 2 and MemeWarrior_GetCooldown(MemeWarrior_OverpowerID);
+function MemeWarrior_OverpowerReady(b)
+  local start, _ = GetSpellCooldown(MemeWarrior_HamstringID, "spell");
+  start = start ~= 0 and GetTime() * 2 - start or GetTime();
+  return MemeWarrior_GetCooldown(MemeWarrior_BloodthirstID) > (1.5 - b) and MemeWarrior_GetCooldown(MemeWarrior_WhirlwindID) > (1.5 - b) and start - MemeWarrior_Overpower < 3 and MemeWarrior_GetCooldown(MemeWarrior_OverpowerID) == 0;
 end

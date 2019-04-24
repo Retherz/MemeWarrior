@@ -1,6 +1,6 @@
 ## Interface: 11200
 ## Title: MemeWarrior
-## Version: 1
+## Version: 1.1
 ## Notes: really memey warrior macro
 ## DefaultState: enabled
 ## Dependencies: KLHThreatMeter
